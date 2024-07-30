@@ -4,7 +4,9 @@ from aws_cdk import (
     aws_ecr_assets as ecr_assets,
     aws_ecs_patterns as ecs_patterns,
     aws_iam as iam,
-    CfnOutput
+    aws_lambda as lambda_,
+    CfnOutput,
+    Fn
 )
 from constructs import Construct
 
@@ -12,9 +14,7 @@ class ChatbotStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, knowledge_base_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # knowledge_base_id를 파라미터로 받아옵니다.
-        if not knowledge_base_id:
-            raise ValueError("KNOWLEDGE_BASE_ID is not provided")
+        knowledge_base_id = Fn.import_value('KnowledgeBaseId')
 
         # ECR 이미지 생성
         image = ecr_assets.DockerImageAsset(self, "ChatbotImage",
@@ -52,6 +52,35 @@ class ChatbotStack(Stack):
                 ],
                 resources=["*"]
             )
+        )
+# Lambda 함수 생성
+        start_ingestion_job_lambda = lambda_.Function(
+            self, 'StartIngestionJobLambda',
+            runtime=lambda_.Runtime.PYTHON_3_9,
+            handler='index.handler',
+            code=lambda_.Code.from_asset('lambda/start_ingestion_job_lambda.py'),
+            environment={
+                'KNOWLEDGE_BASE_ID': knowledge_base_id
+            }
+        )
+
+        # Lambda에 필요한 권한 부여
+        start_ingestion_job_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=['bedrock:StartIngestionJob'],
+                resources=['*']
+            )
+        )
+
+        # Lambda 함수 URL 생성 (테스트 목적)
+        lambda_url = start_ingestion_job_lambda.add_function_url(
+            auth_type=lambda_.FunctionUrlAuthType.NONE
+        )
+
+        # Lambda 함수 URL 출력
+        CfnOutput(self, 'StartIngestionJobLambdaUrl',
+            value=lambda_url.url,
+            description='URL for the Start Ingestion Job Lambda function'
         )
 
         # 출력

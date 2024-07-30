@@ -35,7 +35,7 @@ class KnowledgeBaseStack(Stack):
         )
 
         # 출력
-        CfnOutput(self, 'KnowledgeBaseId', value=kb.knowledge_base_id)
+        CfnOutput(self, 'KnowledgeBaseId', value=kb.knowledge_base_id, export_name='KnowledgeBaseId')
         CfnOutput(self, 'KnowledgeBaseName', value=kb.knowledge_base_arn)
         CfnOutput(self, 'S3BucketName', value=self.bucket.bucket_name)
 

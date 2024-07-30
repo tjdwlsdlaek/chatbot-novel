@@ -32,7 +32,6 @@ logger = logging.getLogger(__name__)
 # AWS clients
 bedrock_agent_runtime = boto3.client('bedrock-agent-runtime')
 bedrock_runtime = boto3.client('bedrock-runtime')
-KNOWLEDGE_BASE_ID = "LRVRTWGD1L"
 
 async def retrieve_information(query: str) -> List[Dict[str, Any]]:
     """Asynchronously retrieve information from the knowledge base."""
