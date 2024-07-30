@@ -2,10 +2,12 @@
 
 ![knowledge-base-for-amazon-bedrock-chatbot-arch](./images/knowledge-base-for-amazon-bedrock-chatbot-arch.png)
 
+This application creates an interactive chatbot based on a novel character using Amazon Bedrock and knowledge base for Amazon Bedrock. The chatbot is deployed as an ECS Fargate service and uses a Knowledge Base created from the novel's content.
+
 ## Overview
 ![luckyday-novel-persona-chatbot-example](./images/luckyday-novel-persona-chatbot-example.png)
 
-This application creates an interactive chatbot based on a novel character using Amazon Bedrock and AWS CDK. The chatbot is deployed as an ECS Fargate service and uses a Knowledge Base created from the novel's content.
+This example is a Persona chatbot architecture utilizing the [Filtering](https://aws.amazon.com/blogs/machine-learning/knowledge-bases-for-amazon-bedrock-now-supports-metadata-filtering-to-improve-retrieval-accuracy/) feature of the Knowledge Base for Amazon Bedrock. You can talk to Kim Cheomji, the main character of the novel "A Lucky Day," and Kim Cheomji's historical background, personality, and speaking style are set by referring to the prompts and PDF files. The output for the prompt is answered by retrieving Cheomji Kim's information embedded in the Knowledge Base for Amazon Bedrock and adding it to the prompt.
 
 ## Prerequisites
 
