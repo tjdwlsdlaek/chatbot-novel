@@ -53,13 +53,19 @@ aws configure
 
 To deploy the application:
 
-1. Synthesize the CloudFormation template:
+1. Log in to aws ecr-public:
+
+```bash
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+```
+
+2. Synthesize the CloudFormation template:
 
 ```bash
 cdk synth --all
 ```
 
-2. Deploy the stacks:
+3. Deploy the stacks:
 
 ```bash
 cdk deploy --require-approval never --all
