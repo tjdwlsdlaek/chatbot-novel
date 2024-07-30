@@ -2,7 +2,7 @@
 
 ![knowledge-base-for-amazon-bedrock-chatbot-arch](./images/knowledge-base-for-amazon-bedrock-chatbot-arch.png)
 
-This application creates an interactive chatbot based on a novel character using Amazon Bedrock and knowledge base for Amazon Bedrock. The chatbot is deployed as an ECS Fargate service and uses a Knowledge Base created from the novel's content.
+This application creates an interactive chatbot based on a novel character using [Amazon Bedrock](https://aws.amazon.com/ko/bedrock/?nc1=h_ls) and [knowledge base for Amazon Bedrock](https://aws.amazon.com/ko/bedrock/knowledge-bases/). The chatbot is deployed as an [ECS Fargate](https://docs.aws.amazon.com/ko_kr/AmazonECS/latest/developerguide/AWS_Fargate.html) service and uses a Knowledge Base created from the novel's content.
 
 ## Overview
 ![luckyday-novel-persona-chatbot-example](./images/luckyday-novel-persona-chatbot-example.png)
@@ -90,6 +90,7 @@ To customize the chatbot for a different novel or character:
 
 1. Update the content in the `assets/novel` directory with your novel's text.
 2. Modify the `KIM_CHEOMJI_BASIC_INFO` and `CHARACTERISTIC_EXPRESSIONS` in the `streamlit_app.py` file to match your character's traits and speaking style.
+3. Before starting a new conversation, To save the updated information in Vector DB (OpenSearch Serverless), you must perform a [synchronization operation](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html).
 
 ## Cleanup
 
