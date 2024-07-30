@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
     aws_iam as iam,
     aws_lambda as lambda_,
+    custom_resources as cr,
     CfnOutput,
     Fn
 )
@@ -53,12 +54,12 @@ class ChatbotStack(Stack):
                 resources=["*"]
             )
         )
-# Lambda 함수 생성
+        # Lambda 함수 생성
         start_ingestion_job_lambda = lambda_.Function(
             self, 'StartIngestionJobLambda',
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler='index.handler',
-            code=lambda_.Code.from_asset('lambda/start_ingestion_job_lambda.py'),
+            code=lambda_.Code.from_asset('./lambda/'),
             environment={
                 'KNOWLEDGE_BASE_ID': knowledge_base_id
             }
@@ -70,6 +71,41 @@ class ChatbotStack(Stack):
                 actions=['bedrock:StartIngestionJob'],
                 resources=['*']
             )
+        )
+
+        # Custom Resource를 위한 IAM 역할 생성
+        custom_resource_role = iam.Role(
+            self, 'CustomResourceRole',
+            assumed_by=iam.ServicePrincipal('lambda.amazonaws.com')
+        )
+
+        # Custom Resource 역할에 Lambda 호출 권한 추가
+        custom_resource_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=['lambda:InvokeFunction'],
+                resources=[start_ingestion_job_lambda.function_arn]
+            )
+        )
+
+        # Custom Resource 생성
+        cr.AwsCustomResource(
+            self, 'TriggerStartIngestionJobLambda',
+            on_create=cr.AwsSdkCall(
+                service='Lambda',
+                action='invoke',
+                parameters={
+                    'FunctionName': start_ingestion_job_lambda.function_name,
+                    'InvocationType': 'Event'
+                },
+                physical_resource_id=cr.PhysicalResourceId.of('TriggerStartIngestionJobLambda')
+            ),
+            policy=cr.AwsCustomResourcePolicy.from_statements([
+                iam.PolicyStatement(
+                    actions=['lambda:InvokeFunction'],
+                    resources=[start_ingestion_job_lambda.function_arn]
+                )
+            ]),
+            role=custom_resource_role
         )
 
         # Lambda 함수 URL 생성 (테스트 목적)
