@@ -1,5 +1,10 @@
 # Bedrock-Powered Novel Character Chatbot
 
+![knowledge-base-for-amazon-bedrock-chatbot-arch](./images/knowledge-base-for-amazon-bedrock-chatbot-arch.png)
+
+## Overview
+![luckyday-novel-persona-chatbot-example](./images/luckyday-novel-persona-chatbot-example.png)
+
 This application creates an interactive chatbot based on a novel character using Amazon Bedrock and AWS CDK. The chatbot is deployed as an ECS Fargate service and uses a Knowledge Base created from the novel's content.
 
 ## Prerequisites
